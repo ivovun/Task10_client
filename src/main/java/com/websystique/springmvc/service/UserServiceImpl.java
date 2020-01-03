@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	public List<User> findAll() {
-		return userRepository.findAll();
+		return this.restTemplate.getForObject(restServerUrl+"/list", List.class);
 	}
 
 	public boolean isUserSSOUnique(Long id, String sso) {
@@ -97,6 +97,6 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public UserDetails loadUserByUsername(String ssoId) throws UsernameNotFoundException {
-		return userRepository.findBySsoId(ssoId);
+		return this.restTemplate.getForObject(restServerUrl+"users/byssoid/"+ssoId, User.class);
 	}
 }
