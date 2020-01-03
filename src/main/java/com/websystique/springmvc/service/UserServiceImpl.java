@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import com.websystique.springmvc.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,27 +15,46 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.websystique.springmvc.model.User;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserService{
+//	@Value("${user_name_for_rest_authentication}")
+//	private String user_name;
+//
+//	@Value("${password_rest_authentication}")
+//	private String password;
+
+
 	private PasswordEncoder passwordEncoder;
 
 	private UserRepository userRepository;
 
+	private final RestTemplate restTemplate;
+
+	@Value("${rest_server_api_url}")
+	private String restServerUrl;
+
 	@Autowired
 	@Lazy
-	public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+	public UserServiceImpl(PasswordEncoder passwordEncoder,
+						   UserRepository userRepository,
+						   RestTemplateBuilder restTemplateBuilder
+						   ) {
 		this.passwordEncoder = passwordEncoder;
 		this.userRepository = userRepository;
+		this.restTemplate = restTemplateBuilder.basicAuthentication("my_rest_user", "my_pass")
+				.build();
+
 	}
 
 	public User findById(long id) {
-		return userRepository.findById(id);
+		return this.restTemplate.getForObject(restServerUrl+"users/"+id, User.class);
 	}
 
 	public User findBySsoId(String ssoId) {
-		return userRepository.findBySsoId(ssoId);
+		return this.restTemplate.getForObject(restServerUrl+"users/"+ssoId, User.class);
 	}
 
 	public void save(User user) {
