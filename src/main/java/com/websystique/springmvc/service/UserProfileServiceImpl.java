@@ -1,34 +1,29 @@
 package com.websystique.springmvc.service;
 
-import java.util.List;
-
-import com.websystique.springmvc.repository.UserProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.websystique.springmvc.model.UserProfile;
+import org.springframework.web.client.RestTemplate;
 
 
 @Service("userProfileService")
 @Transactional
 public class UserProfileServiceImpl implements UserProfileService{
-	UserProfileRepository userProfileRepository;
+	private final RestTemplate restTemplate;
+
+	@Value("${rest_server_api_url}")
+	private String restServerUrl;
 
 	@Autowired
-	public UserProfileServiceImpl(UserProfileRepository userProfileRepository) {
-		this.userProfileRepository = userProfileRepository;
+	public UserProfileServiceImpl(RestTemplateBuilder restTemplateBuilder) {
+		this.restTemplate = restTemplateBuilder.basicAuthentication("my_rest_user", "my_pass").build();
 	}
 	
 	public UserProfile findById(long id) {
-		return userProfileRepository.findById(id);
+		return restTemplate.getForObject(restServerUrl+"profiles/"+id, UserProfile.class);
 	}
-
-	public UserProfile findByType(String type){
-		return userProfileRepository.findByType(type);
-	}
-
-	public List<UserProfile> findAll() {
-		return userProfileRepository.findAll();
-	}
-}
+ }
