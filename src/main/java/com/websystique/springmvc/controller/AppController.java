@@ -79,8 +79,6 @@ public class AppController {
      */
     @RequestMapping(value = {"/admin/list"}, method = RequestMethod.GET)
     public String listUsers(ModelMap model) {
-//        List<User> users = userService.findAll();
-//        model.addAttribute("users", users);
         model.addAttribute("loggedinuser", getPrincipal());
         model.addAttribute("showAdminPanel", true);
         return "userslist";
