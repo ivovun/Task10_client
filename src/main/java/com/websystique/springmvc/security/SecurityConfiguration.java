@@ -51,8 +51,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.and().formLogin().loginPage("/login").loginProcessingUrl("/login").usernameParameter("ssoId").passwordParameter("password")
 				.successHandler(authenticationSuccessHandler)
 				.and().csrf().disable().exceptionHandling().accessDeniedPage("/Access_Denied");
-//testing
+
+		//testing
 //		http.cors().and().csrf().disable().authorizeRequests().antMatchers("/**").permitAll();
+
+
+//		http.authorizeRequests().anyRequest().fullyAuthenticated();
+//		http.httpBasic();
+//		http.csrf().disable();
+
 	}
 
 	@Bean

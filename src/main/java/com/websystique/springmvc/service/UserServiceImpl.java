@@ -1,21 +1,30 @@
 package com.websystique.springmvc.service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import com.websystique.springmvc.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.websystique.springmvc.model.User;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 @Transactional
@@ -50,24 +59,24 @@ public class UserServiceImpl implements UserService{
 	}
 
 	public User findById(long id) {
-		return this.restTemplate.getForObject(restServerUrl+"users/"+id, User.class);
+		return restTemplate.getForObject(restServerUrl+"users/"+id, User.class);
 	}
 
 	public User findBySsoId(String ssoId) {
-		return this.restTemplate.getForObject(restServerUrl+"users/"+ssoId, User.class);
+		return restTemplate.getForObject(restServerUrl+"users/byssoid/"+ssoId, User.class);
 	}
 
 	public void save(User user) {
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		userRepository.save(user);
-	}
+ 		restTemplate.postForObject(restServerUrl+"save/" , new HttpEntity<>(user), User.class);
+ 	}
 
-	public void deleteUserBySsoId(String sso) {
-		userRepository.deleteBySsoId(sso);
+	public void deleteUserBySsoId(String ssoId) {
+		restTemplate.delete(restServerUrl+"delete/{id}", ssoId);
+		//userRepository.deleteBySsoId(sso);
 	}
 
 	public List<User> findAll() {
-		return this.restTemplate.getForObject(restServerUrl+"/list", List.class);
+		return restTemplate.getForObject(restServerUrl+"/list", List.class);
 	}
 
 	public boolean isUserSSOUnique(Long id, String sso) {
@@ -77,6 +86,6 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public UserDetails loadUserByUsername(String ssoId) throws UsernameNotFoundException {
-		return this.restTemplate.getForObject(restServerUrl+"users/byssoid/"+ssoId, User.class);
+		return findBySsoId(ssoId);
 	}
 }

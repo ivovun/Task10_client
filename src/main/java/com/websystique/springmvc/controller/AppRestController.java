@@ -45,7 +45,7 @@ public class AppRestController {
 
 
 
-    @PostMapping("/admin/api/save")
+    @PostMapping(value = "/admin/api/save", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Void> save(@RequestBody User user) {
         if (!userService.isUserSSOUnique(user.getId(), user.getSsoId())) {
             throw new NonUniqueSsoIdException(messageSource.getMessage("non.unique.ssoId", new String[]{user.getSsoId()}, Locale.getDefault()));
