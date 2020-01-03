@@ -16,7 +16,5 @@ public interface UserService extends UserDetailsService {
 
 	void deleteUserBySsoId(String sso);
 
-	void updateUser(User user);
-
 	boolean isUserSSOUnique(Long id, String sso);
 }
