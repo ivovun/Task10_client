@@ -5,21 +5,11 @@ import org.springframework.security.core.GrantedAuthority;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Entity
-@Table(name="USER_PROFILE")
-public class UserProfile implements GrantedAuthority {
-	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+ public class UserProfile implements GrantedAuthority {
+ 	private Long id;
 
-	@Column(name="TYPE", length=15, unique=true, nullable=false)
-	private String type = UserProfileType.USER.getUserProfileType();
+ 	private String type = UserProfileType.USER.getUserProfileType();
 	
 	public Long getId() {
 		return id;

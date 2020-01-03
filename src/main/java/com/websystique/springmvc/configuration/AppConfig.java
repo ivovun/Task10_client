@@ -18,14 +18,7 @@ import com.websystique.springmvc.converter.RoleToUserProfileConverter;
  *To customize the imported configuration, implement the interface WebMvcConfigurer and override individual methods
  *  addFormatters, addResourceHandlers
  */
-//@Configuration
 public class AppConfig implements WebMvcConfigurer {
-//    @Value("${user_name_for_rest_authentication}")
-//    private String user_name;
-//
-//    @Value("${password_rest_authentication}")
-//    private String password;
-
     private RoleToUserProfileConverter roleToUserProfileConverter;
 
 	public AppConfig(RoleToUserProfileConverter roleToUserProfileConverter) {
@@ -50,10 +43,5 @@ public class AppConfig implements WebMvcConfigurer {
 	    messageSource.setBasename("messages");
 	    return messageSource;
 	}
-
-//    @Bean
-//    RestOperations restTemplateBuilder(RestTemplateBuilder restTemplateBuilder) {
-//        return restTemplateBuilder.basicAuthentication(user_name, password).build();
-//    }
 }
 
