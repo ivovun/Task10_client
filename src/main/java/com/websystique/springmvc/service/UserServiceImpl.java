@@ -29,17 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService{
-//	@Value("${user_name_for_rest_authentication}")
-//	private String user_name;
-//
-//	@Value("${password_rest_authentication}")
-//	private String password;
-
-
-	private PasswordEncoder passwordEncoder;
-
-	private UserRepository userRepository;
-
 	private final RestTemplate restTemplate;
 
 	@Value("${rest_server_api_url}")
@@ -47,15 +36,8 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	@Lazy
-	public UserServiceImpl(PasswordEncoder passwordEncoder,
-						   UserRepository userRepository,
-						   RestTemplateBuilder restTemplateBuilder
-						   ) {
-		this.passwordEncoder = passwordEncoder;
-		this.userRepository = userRepository;
-		this.restTemplate = restTemplateBuilder.basicAuthentication("my_rest_user", "my_pass")
-				.build();
-
+	public UserServiceImpl(RestTemplateBuilder restTemplateBuilder) {
+		this.restTemplate = restTemplateBuilder.basicAuthentication("my_rest_user", "my_pass").build();
 	}
 
 	public User findById(long id) {
@@ -72,7 +54,6 @@ public class UserServiceImpl implements UserService{
 
 	public void deleteUserBySsoId(String ssoId) {
 		restTemplate.delete(restServerUrl+"delete/{id}", ssoId);
-		//userRepository.deleteBySsoId(sso);
 	}
 
 	public List<User> findAll() {
