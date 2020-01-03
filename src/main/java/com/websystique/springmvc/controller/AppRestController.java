@@ -31,8 +31,6 @@ public class AppRestController {
         this.messageSource = messageSource;
     }
 
-
-
     @GetMapping("/admin/api/list")
     public ResponseEntity<List<User>> getUserList() {
         return new ResponseEntity(userService.findAll(), HttpStatus.OK);
@@ -42,8 +40,6 @@ public class AppRestController {
     public ResponseEntity<User> edit(@RequestParam("id") String id, ModelMap model) {
         return new ResponseEntity(userService.findById(Long.parseLong(id)), HttpStatus.OK);
     }
-
-
 
     @PostMapping(value = "/admin/api/save", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Void> save(@RequestBody User user) {
